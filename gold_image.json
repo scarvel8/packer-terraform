@@ -1,0 +1,64 @@
+{
+	"provisioners": [
+	{
+		"type": "shell",
+		"execute_command": "echo 'packer'|sudo -S sh '{{.Path}}'",
+		"override": {
+		  "vmware-iso": {
+		    "scripts": [
+			"scripts/sudoers.sh"
+		    ]
+		  }
+		}
+	}
+	],
+	"variables": {
+	  "templatename": "yodle-ubuntu1604",
+	  "buildnumber": "1",
+	  "hostname": "goldimage"
+	},
+	"description": "Yodle Ubuntu 16.04 LTS Image",
+	"builders": [
+ 	  {
+ 	  	"type": "vmware-iso",
+ 	  	"iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04-server-amd64.iso",
+ 	  	"iso_checksum": "23e97cd5d4145d4105fbf29878534049",
+ 	  	"iso_checksum_type": "md5",
+ 	  	"ssh_username": "packer",
+		"ssh_password": "packer",
+ 	  	"shutdown_command": "echo 'packer'|sudo -S shutdown -P now",
+		"ssh_wait_timeout": "20m",
+		"ssh_pty": "true",
+ 	  	"headless": "true",
+		"http_directory": "./",
+		"output_directory": "packer-ubuntu-16.04-amd64-vmware",
+	        "boot_command": 
+	  	[	
+        		"<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+       			"<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+		        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+		        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+		        "/install/vmlinuz",
+		        " auto",
+		        " console-setup/ask_detect=false",
+		        " console-setup/layoutcode=us",
+		        " console-setup/modelcode=pc105",
+		        " debconf/frontend=noninteractive",
+		        " debian-installer=en_US",
+		        " fb=false",
+		        " initrd=/install/initrd.gz",
+		        " kbd-chooser/method=us",
+		        " keyboard-configuration/layout=USA",
+		        " keyboard-configuration/variant=USA",
+		        " locale=en_US",
+		        " netcfg/get_domain=vm",
+		        " netcfg/get_hostname={{user `hostname`}}",
+		        " grub-installer/bootdev=/dev/sda<wait>",
+		        " noapic<wait>",
+		        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+		        " -- <wait>",
+		        "<enter><wait>"
+		]
+	   }
+	]
+}
